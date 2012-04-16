@@ -162,10 +162,13 @@ module Mogli
       return []  if hash_or_array == {"count" => 0}
       return hash_or_array if hash_or_array.nil? or hash_or_array.kind_of?(Array)
       return extract_fetching_array(hash_or_array,klass) if is_fetching_array?(hash_or_array)
+      # Facebook doesn't return numbers or booleans in an object or list
+      # container; this will catch the number, "true" and "false" response case
       return hash_or_array
     end
 
     def is_fetching_array?(hash)
+      return false unless hash.respond_to? :has_key
       hash.has_key?("data") and hash["data"].instance_of?(Array)
     end
 
